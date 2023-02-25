@@ -1,5 +1,5 @@
 ![LOGO](https://zupimages.net/up/23/07/93yr.png)
-# 🔰 [WBFA] Windows10 Free Activator 🔰
+# 🔰 [WBFA] Windows Free Activator 🔰
 
 WBFA (WindowsBatchFreeActivator) is a tool to activate Windows10 easily in just fiews clicks !
 
