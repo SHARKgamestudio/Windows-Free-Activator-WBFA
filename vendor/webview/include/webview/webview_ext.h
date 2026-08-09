@@ -3,6 +3,19 @@
 
 #include "webview_core.h"
 
+/*
+ * Force main() as the entry point (instead of WinMain) so consumers can write
+ * a plain main() and still build a GUI (Windows subsystem) application.
+ *
+ * The subsystem is deliberately NOT forced here: set your project's Subsystem
+ * to Console (e.g. in Debug) to get a console window, or Windows (e.g. in
+ * Release) to suppress it. A #pragma /SUBSYSTEM:windows would override the
+ * project setting, so it is omitted.
+ */
+#if defined(_MSC_VER)
+#pragma comment(linker, "/ENTRY:mainCRTStartup")
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -60,26 +73,11 @@ typedef struct {
 void webview_window_options_init(webview_window_options_t *options);
 
 /**
- * Attaches a console window to the application and redirects the standard
- * streams to it.
- *
- * This is a debug-only convenience for logging from C (e.g. via @c printf).
- * In debug builds (@c _DEBUG) a console is allocated with @c AllocConsole
- * and @c stdout/@c stderr/@c stdin are redirected to it. In release builds
- * this function is a no-op, so no console ever appears in distributed apps.
- *
- * @see webview_init_window
- */
-void webview_attach_console(void);
-
-/**
  * Creates and configures the native window for a webview instance.
  *
  * This function combines several common window-setup steps into one call:
  * setting the title, sizing the window, applying window options (borderless,
  * rounded corners, icon, centering), and preparing the webview for use.
- * In debug builds it also attaches a console for logging
- * (see @c webview_attach_console); this is skipped in release builds.
  *
  * @param w The webview instance. Must not be @c NULL.
  * @param title The window title displayed in the caption (if visible)

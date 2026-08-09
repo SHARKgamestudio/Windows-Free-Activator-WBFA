@@ -2,9 +2,16 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="entry.c" />
+    <ClCompile Include="utils\os.c" />
+    <ClCompile Include="app.c" />
+    <ClCompile Include="utils\logger.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="utils\os.h" />
+    <ClInclude Include="app.h" />
+    <ClInclude Include="utils\logger.h" />
+    <ClInclude Include="page.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="wbfa.rc" />

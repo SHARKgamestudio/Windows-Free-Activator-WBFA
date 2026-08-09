@@ -61,7 +61,7 @@
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IncrementalLinking>false</IncrementalLinking>
       <AdditionalLibraryDirectories>$(SolutionDir)vendor\webview\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -94,10 +94,17 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="app.c" />
     <ClCompile Include="entry.c" />
+    <ClCompile Include="utils\logger.c" />
+    <ClCompile Include="utils\os.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="app.h" />
+    <ClInclude Include="page.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="utils\logger.h" />
+    <ClInclude Include="utils\os.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="wbfa.rc" />
