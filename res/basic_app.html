@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control Surface</title>
+  <style>
+    :root {
+      --bg-0: #121316;
+      --bg-1: #171a1f;
+      --line: rgba(255, 255, 255, 0.14);
+      --line-soft: rgba(255, 255, 255, 0.07);
+      --text: #eceff8;
+      --text-soft: #b8bfd3;
+      --accent: #7aa2ff;
+      --danger: #ff4b72;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      color: var(--text);
+      font-family: "Segoe UI", "Aptos", "Trebuchet MS", sans-serif;
+      background:
+        radial-gradient(circle at 12% -8%, rgba(122, 162, 255, 0.18), transparent 38%),
+        radial-gradient(circle at 88% 112%, rgba(152, 129, 255, 0.14), transparent 44%),
+        linear-gradient(155deg, var(--bg-0), var(--bg-1));
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      background:
+        repeating-linear-gradient(
+          -28deg,
+          rgba(255, 255, 255, 0.022) 0,
+          rgba(255, 255, 255, 0.022) 1px,
+          transparent 1px,
+          transparent 22px
+        );
+      opacity: 0.26;
+    }
+
+    body::after {
+      background:
+        radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.032), transparent 30%),
+        radial-gradient(circle at 74% 82%, rgba(255, 255, 255, 0.03), transparent 32%);
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 130px);
+    }
+
+    .titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(15, 17, 22, 0.72);
+      backdrop-filter: blur(8px);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.75rem;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-soft);
+    }
+
+    .title-mark {
+      width: 24px;
+      height: 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .title-mark::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 50%;
+      width: 8px;
+      height: 2px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, #9fb9ff, #ffffff);
+      border-radius: 4px;
+    }
+
+    .window-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .window-btn {
+      height: 31px;
+      min-width: 31px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 170ms ease, border-color 170ms ease, box-shadow 200ms ease, transform 120ms ease;
+    }
+
+    .window-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.32);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .window-btn.close:hover {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #ffffff;
+      box-shadow: 0 8px 18px rgba(255, 75, 114, 0.32);
+    }
+
+    .window-btn:active {
+      transform: translateY(1px);
+    }
+
+    .icon {
+      position: relative;
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+
+    .icon.min::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 5px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .icon.close::before,
+    .icon.close::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 0;
+      width: 2px;
+      height: 12px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .icon.close::before {
+      transform: rotate(45deg);
+    }
+
+    .icon.close::after {
+      transform: rotate(-45deg);
+    }
+
+    .content {
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .controls {
+      width: min(420px, 88vw);
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+      backdrop-filter: blur(6px);
+      box-shadow: 0 16px 34px rgba(6, 8, 12, 0.42);
+    }
+
+    .field {
+      position: relative;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-toggle {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      appearance: none;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18, 21, 30, 0.94), rgba(9, 11, 16, 0.92));
+      color: var(--text);
+      padding: 0 14px;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: border-color 150ms ease, box-shadow 170ms ease, transform 120ms ease, background 160ms ease;
+    }
+
+    .dropdown-toggle:hover {
+      border-color: rgba(255, 255, 255, 0.36);
+      transform: translateY(-1px);
+      background: linear-gradient(180deg, rgba(23, 27, 38, 0.98), rgba(11, 14, 20, 0.96));
+    }
+
+    .dropdown-toggle:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(122, 162, 255, 0.24);
+    }
+
+    .dropdown-toggle[aria-expanded="true"] {
+      border-color: rgba(122, 162, 255, 0.78);
+      box-shadow: 0 0 0 3px rgba(122, 162, 255, 0.14), 0 10px 24px rgba(0, 0, 0, 0.26);
+    }
+
+    .dropdown-value {
+      min-width: 0;
+      flex: 1;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dropdown-caret {
+      width: 9px;
+      height: 9px;
+      border-right: 2px solid #d7def7;
+      border-bottom: 2px solid #d7def7;
+      transform: rotate(45deg) translateY(-1px);
+      transition: transform 180ms ease, border-color 180ms ease;
+      flex: 0 0 auto;
+    }
+
+    .dropdown-toggle[aria-expanded="true"] .dropdown-caret {
+      transform: rotate(225deg) translateY(-1px);
+      border-color: #f2f5ff;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 10px);
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(180deg, rgba(17, 20, 28, 0.98), rgba(8, 10, 14, 0.96));
+      box-shadow: 0 18px 32px rgba(0, 0, 0, 0.38);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-6px) scale(0.98);
+      transform-origin: top center;
+      transition: opacity 150ms ease, transform 170ms ease, visibility 0s linear 170ms;
+      z-index: 10;
+    }
+
+    .dropdown.is-open .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+      transition: opacity 150ms ease, transform 170ms ease, visibility 0s;
+    }
+
+    .dropdown-option {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+      color: var(--text);
+      padding: 11px 12px;
+      text-align: left;
+      font-size: 0.94rem;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+    }
+
+    .dropdown-option:hover {
+      transform: translateY(-1px) scale(1.01);
+      border-color: rgba(140, 170, 255, 0.45);
+      background: linear-gradient(135deg, rgba(122, 162, 255, 0.18), rgba(255, 255, 255, 0.05));
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .dropdown-option:active {
+      transform: translateY(0) scale(0.995);
+    }
+
+    .dropdown-option.is-selected {
+      border-color: rgba(122, 162, 255, 0.5);
+      background: linear-gradient(135deg, rgba(122, 162, 255, 0.26), rgba(255, 255, 255, 0.05));
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .dropdown-option.is-selected::after {
+      content: "Selected";
+      float: right;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(226, 233, 255, 0.8);
+    }
+
+    .dropdown-option:focus-visible {
+      outline: 2px solid rgba(160, 186, 255, 0.92);
+      outline-offset: 2px;
+    }
+
+    .dropdown-sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .action-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, #f3f6ff, #dce6ff);
+      color: #15213f;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 1.05px;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      transition: transform 120ms ease, box-shadow 180ms ease, filter 140ms ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(82, 113, 189, 0.28);
+      filter: brightness(1.02);
+    }
+
+    .action-btn:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .action-btn:focus-visible,
+    .dropdown-toggle:focus-visible,
+    .window-btn:focus-visible {
+      outline: 2px solid rgba(160, 186, 255, 0.92);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 640px) {
+      .controls {
+        width: min(420px, 94vw);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="titlebar">
+      <div class="title">
+        <span class="title-mark" aria-hidden="true"></span>
+        <span id="window-title">Control Surface</span>
+      </div>
+      <div class="window-actions">
+        <button class="window-btn" id="min-btn" type="button" aria-label="Minimize">
+          <span class="icon min" aria-hidden="true"></span>
+        </button>
+        <button class="window-btn close" id="close-btn" type="button" aria-label="Close">
+          <span class="icon close" aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="controls" aria-label="Main controls">
+        <div class="field">
+          <div class="dropdown" id="env-dropdown">
+            <button class="dropdown-toggle" id="env-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="env-menu">
+              <span class="dropdown-value" id="env-value">Development</span>
+              <span class="dropdown-caret" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown-menu" id="env-menu" role="listbox" aria-label="Environment selector" aria-hidden="true"></div>
+            <select id="env-select" class="dropdown-sr" aria-label="Environment selector" tabindex="-1"></select>
+          </div>
+        </div>
+
+        <button class="action-btn" id="launch-btn" type="button">Run Selected Action</button>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const minBtn = document.getElementById("min-btn");
+    const closeBtn = document.getElementById("close-btn");
+    const titlebar = document.querySelector(".titlebar");
+    const launchBtn = document.getElementById("launch-btn");
+    const envSelect = document.getElementById("env-select");
+    const envDropdown = document.getElementById("env-dropdown");
+    const envToggle = document.getElementById("env-toggle");
+    const envValue = document.getElementById("env-value");
+    const envMenu = document.getElementById("env-menu");
+    let envOptions = [];
+
+    /* Calls a native function that webview exposed on window (see the
+     * webview_bind_* calls in C). Falls back to a resolved Promise. */
+    const callNative = (name) => {
+      if (typeof window[name] === "function") {
+        return window[name]();
+      }
+      return Promise.resolve();
+    };
+
+    const setDropdownOpen = (open) => {
+      envDropdown.classList.toggle("is-open", open);
+      envToggle.setAttribute("aria-expanded", String(open));
+      envMenu.setAttribute("aria-hidden", String(!open));
+    };
+
+    /* env-select is a hidden <select> mirroring the custom dropdown; it is
+     * the source of truth read by the action button below. */
+    const setSelectedEnvironment = (value) => {
+      envSelect.value = value;
+      envValue.textContent = value;
+
+      envOptions.forEach((option) => {
+        const isSelected = option.dataset.value === value;
+        option.classList.toggle("is-selected", isSelected);
+        option.setAttribute("aria-selected", String(isSelected));
+      });
+    };
+
+    /* Build environment dropdown from C data */
+    window.getDropdownContent().then(function(envs) {
+      envs.forEach(function(name) {
+        var btn = document.createElement("button");
+        btn.className = "dropdown-option";
+        btn.type = "button";
+        btn.role = "option";
+        btn.dataset.value = name;
+        btn.textContent = name;
+        envMenu.appendChild(btn);
+
+        var opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        envSelect.appendChild(opt);
+      });
+
+      envOptions = Array.from(envMenu.querySelectorAll(".dropdown-option"));
+      setSelectedEnvironment(envSelect.value);
+
+      envOptions.forEach(function(option) {
+        option.addEventListener("click", function() {
+          setSelectedEnvironment(option.dataset.value);
+          setDropdownOpen(false);
+          envToggle.focus();
+        });
+      });
+    });
+
+    minBtn.addEventListener("click", () => {
+      callNative("appMinimize");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      callNative("appClose");
+    });
+
+    envToggle.addEventListener("click", () => {
+      setDropdownOpen(!envDropdown.classList.contains("is-open"));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!envDropdown.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setDropdownOpen(false);
+      }
+    });
+
+    /* Drag the borderless window from the titlebar; skip interactive
+     * elements so buttons/text still work. */
+    titlebar.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) {
+        return;
+      }
+
+      if (event.target.closest("button, select, option, input, textarea, a")) {
+        return;
+      }
+
+      callNative("appStartDrag");
+    });
+
+    launchBtn.addEventListener("click", () => {
+      const selected = envSelect.value;
+      launchBtn.disabled = true;
+      launchBtn.textContent = "Launching " + selected + "...";
+
+      window.runAction(selected);
+
+      setTimeout(() => {
+        launchBtn.textContent = "Run Selected Action";
+        launchBtn.disabled = false;
+      }, 700);
+    });
+
+    /* document.title doubles as the native window title. */
+    window.getWindowTitle().then(function(t) {
+      document.title = t;
+      document.getElementById("window-title").textContent = t;
+    });
+  </script>
+</body>
+</html>
