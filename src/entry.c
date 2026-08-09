@@ -1,12 +1,3 @@
-/*
- * Sample app: webview library + webview_ext helpers.
- *
- * Data flows "pull": JavaScript calls a bound function (e.g.
- * window.getWindowTitle()) and the C callback replies through
- * webview_return(), resolving the JS Promise with a JSON string.
- * Nothing is pushed from C to JS.
- */
-
 #include "webview/webview_core.h"
 #include "webview/webview_ext.h"
 #include <stdio.h>
