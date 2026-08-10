@@ -9,9 +9,7 @@
 
 #include "utils/logger.h"
 #include "resource.h"
-
-static const char* g_content[] =
-{ "Option 1", "Option 2", "Option 3", NULL };
+#include "utils/os.h"
 
 //webview_eval(w, "functionToCall('param');");
 
@@ -31,12 +29,12 @@ static void get_content(const char* id, const char* req, void* arg) {
 
     char buf[512] = "[";
     int first = 1;
-    for (int i = 0; g_content[i] != NULL; i++) {
+    for (int i = 1; os_distribution_names[i] != NULL; i++) {
         if (!first)
             strcat(buf, ",");
         first = 0;
         strcat(buf, "\"");
-        strcat(buf, g_content[i]);
+        strcat(buf, os_distribution_names[i]);
         strcat(buf, "\"");
     }
     strcat(buf, "]");
@@ -54,12 +52,23 @@ static void run_action(const char* id, const char* req, void* arg) {
         selected[len] = '\0';
     }
 
+    ShellExecute(NULL,
+        "runas",
+        "echo",
+        "HelloWorld",
+        NULL,                        // default dir 
+        SW_SHOWNORMAL
+    );
+
     printf("Run Selected Action: %s\n", selected);
     webview_return((webview_t)arg, id, 0, "true");
 }
 
 void app_initialize(app_t* app, const app_config_t* config) {
     app->config_ptr = config;
+
+    os_info_t infos = os_get_info();
+
 
     WBFA_LOG_INFO("Creating WebView instance...");
 
@@ -68,6 +77,7 @@ void app_initialize(app_t* app, const app_config_t* config) {
         WBFA_LOG_ERROR("Could not create the WebView instance!");
 
     WBFA_LOG_INFO("Binding functions to javascript...");
+
 
     webview_bind_minimize(app->webv_inst, "appMinimize");
     webview_bind_close(app->webv_inst, "appClose");

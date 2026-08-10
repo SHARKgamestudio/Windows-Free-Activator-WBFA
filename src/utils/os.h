@@ -51,6 +51,21 @@ typedef enum os_version {
     OS_WIN_11
 } os_version_t;
 
+static const char* const os_version_names[] = {
+    [OS_WIN_UNKNOWN]        = "Unknown Version",
+    [OS_WIN_XP]             = "Windows XP",
+    [OS_WIN_VISTA]          = "Windows Vista",
+    [OS_WIN_7]              = "Windows 7",
+    [OS_WIN_8]              = "Windows 8",
+    [OS_WIN_8_1]            = "Windows 8.1",
+    [OS_WIN_10]             = "Windows 10",
+    [OS_WIN_10_LTSB_2015]   = "Windows 10 - LTSB 2015",
+    [OS_WIN_10_LTSB_2016]   = "Windows 10 - LTSB 2016",
+    [OS_WIN_10_LTSC_2019]   = "Windows 10 - LTSC 2019",
+    [OS_WIN_10_LTSC_2021]   = "Windows 10 - LTSC 2021",
+    [OS_WIN_11]             = "Windows 11"
+};
+
 /*
  * Define OSBuild as an alias for DWORD.
  * Provides abstraction and improves readability.
@@ -76,6 +91,22 @@ typedef enum os_distribution {
     OS_DIST_BUSINESS_LTSB_N
 } os_distribution_t;
 
+static const char* const os_distribution_names[] = {
+    [OS_DIST_UNKNOWN]                   = "Unknown Distribution",
+    [OS_DIST_HOME]                      = "Windows Home",
+    [OS_DIST_HOME_N]                    = "Windows Home N",
+    [OS_DIST_HOME_SINGLE_LANG]          = "Windows Home, Single Language",
+    [OS_DIST_HOME_COUNTRY_SPECIFIC]     = "Windows Home, Country Specific",
+    [OS_DIST_PRO]                       = "Windows Professional",
+    [OS_DIST_PRO_N]                     = "Windows Professional N",
+    [OS_DIST_EDUCATION]                 = "Windows Education",
+    [OS_DIST_EDUCATION_N]               = "Windows Education N",
+    [OS_DIST_BUSINESS]                  = "Windows Business",
+    [OS_DIST_BUSINESS_N]                = "Windows Business N",
+    [OS_DIST_BUSINESS_LTSB]             = "Windows Business - LTSB",
+    [OS_DIST_BUSINESS_LTSB_N]           = "Windows Business N - LTSB"
+};
+
 
 //----------------------------------------------------------------------------------
 // Language
@@ -94,6 +125,16 @@ typedef enum os_language {
     OS_LANG_CHINESE_SIMPLIFIED,
     OS_LANG_CHINESE_TRADITIONAL,
 } os_language_t;
+static const char* const os_language_names[] = {
+    [OS_LANG_UNKNOWN]               = "Unknown Language",
+    [OS_LANG_ENGLISH]               = "English",
+    [OS_LANG_FRENCH]                = "French",
+    [OS_LANG_GERMAN]                = "German",
+    [OS_LANG_SPANISH]               = "Spanish",
+    [OS_LANG_JAPANESE]              = "Japanese",
+    [OS_LANG_CHINESE_SIMPLIFIED]    = "Simplified Chinese",
+    [OS_LANG_CHINESE_TRADITIONAL]   = "Traditional Chinese"
+};
 
 
 //----------------------------------------------------------------------------------
@@ -105,6 +146,12 @@ typedef enum os_theme {
     OS_THEME_LIGHT,
     OS_THEME_DARK
 } os_theme_t;
+
+static const char* const os_theme_names[] = {
+    [OS_THEME_UNKNOWN] = "Unknown Theme",
+    [OS_THEME_LIGHT] = "Dark",
+    [OS_THEME_DARK] = "Light",
+};
 
 
 //----------------------------------------------------------------------------------

@@ -11,7 +11,6 @@
     <ClInclude Include="utils\os.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="utils\logger.h" />
-    <ClInclude Include="page.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="wbfa.rc" />

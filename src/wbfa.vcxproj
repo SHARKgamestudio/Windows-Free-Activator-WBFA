@@ -101,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
-    <ClInclude Include="page.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="utils\logger.h" />
     <ClInclude Include="utils\os.h" />
