@@ -10,6 +10,7 @@
 #include "utils/logger.h"
 #include "resource.h"
 #include "utils/os.h"
+#include "utils/shell.h"
 
 //webview_eval(w, "functionToCall('param');");
 
@@ -52,13 +53,15 @@ static void run_action(const char* id, const char* req, void* arg) {
         selected[len] = '\0';
     }
 
-    ShellExecute(NULL,
-        "runas",
-        "echo",
-        "HelloWorld",
-        NULL,                        // default dir 
-        SW_SHOWNORMAL
-    );
+    shell_run_command("echo Hello", true, false);
+
+    //ShellExecute(NULL,
+    //    "runas",
+    //    "echo",
+    //    "HelloWorld",
+    //    NULL,                        // default dir 
+    //    SW_SHOWNORMAL
+    //);
 
     printf("Run Selected Action: %s\n", selected);
     webview_return((webview_t)arg, id, 0, "true");
