@@ -286,9 +286,16 @@
       display: grid;
       gap: 8px;
       padding: 10px;
+      /* 3 options maximum before scrolling */
+      max-height: calc( (3 * 48px) + (2 * 8px) + (2 * 10px) );
+      overflow-y: auto;
+      overflow-x: hidden;
+      /* hide the scrollbar entirely, keep scrolling behavior */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* legacy Edge/IE */
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.14);
-      background: linear-gradient(180deg, rgba(17, 20, 28, 0.98), rgba(8, 10, 14, 0.96));
+      background: linear-gradient( 180deg, rgba(17, 20, 28, 0.98), rgba(8, 10, 14, 0.96) );
       box-shadow: 0 18px 32px rgba(0, 0, 0, 0.38);
       opacity: 0;
       visibility: hidden;
@@ -297,6 +304,10 @@
       transform-origin: top center;
       transition: opacity 150ms ease, transform 170ms ease, visibility 0s linear 170ms;
       z-index: 10;
+    }
+
+    .dropdown-menu::-webkit-scrollbar {
+      display: none; /* Chrome/Edge/WebKit */
     }
 
     .dropdown.is-open .dropdown-menu {
